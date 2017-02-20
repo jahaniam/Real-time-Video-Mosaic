@@ -15,7 +15,7 @@ There is a manual I wrote: "how to compile CUDA for Opencv 2.411.pdf" or you can
 I used visual studio but you can use g++ to compile but you need to link the libraries.
 __________
 Demos at:
-https://www.youtube.com/watch?v=on_sG_X79oQ&t=29s
+https://www.youtube.com/watch?v=on_sG_X79oQ
 
 Hope it helps.
 
