@@ -1,8 +1,10 @@
 # Real-time-Video-Mosaic
 
 This project has been done under supervision of: Dr. Hadi Moradi
+
 Advanced Robotics and Intelligent Systems
-University of Tehran
+
+University of Tehran, Iran
 ____________________
 
 This program can work with live camera/webcam or a pre-recorded video. You can read the manual to know how to feed a video stream to it or use a live camera. For live camera, it may not be robust. The output is related to quality of the camera and not having blured frames when moving.
