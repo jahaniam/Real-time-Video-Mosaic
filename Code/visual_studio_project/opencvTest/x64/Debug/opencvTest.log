@@ -1,0 +1,14 @@
+﻿  stitch6_2016.02.10.cpp
+stitch6_2016.02.10.cpp(27): warning C4129: 'm' : unrecognized character escape sequence
+stitch6_2016.02.10.cpp(130): warning C4244: '=' : conversion from 'double' to 'int', possible loss of data
+stitch6_2016.02.10.cpp(222): warning C4267: 'initializing' : conversion from 'size_t' to 'int', possible loss of data
+stitch6_2016.02.10.cpp(229): warning C4267: 'initializing' : conversion from 'size_t' to 'int', possible loss of data
+stitch6_2016.02.10.cpp(298): warning C4244: 'argument' : conversion from 'double' to 'int', possible loss of data
+stitch6_2016.02.10.cpp(299): warning C4244: 'argument' : conversion from 'double' to 'int', possible loss of data
+stitch6_2016.02.10.cpp(445): warning C4244: '=' : conversion from 'double' to 'float', possible loss of data
+stitch6_2016.02.10.cpp(627): warning C4244: 'argument' : conversion from 'int' to 'float', possible loss of data
+stitch6_2016.02.10.cpp(628): warning C4244: 'argument' : conversion from 'int' to 'float', possible loss of data
+stitch6_2016.02.10.cpp(629): warning C4244: 'argument' : conversion from 'int' to 'float', possible loss of data
+stitch6_2016.02.10.cpp(660): warning C4244: '=' : conversion from 'double' to 'int', possible loss of data
+stitch6_2016.02.10.cpp(720): warning C4244: 'argument' : conversion from 'double' to 'int', possible loss of data
+c:\users\user\documents\visual studio 2013\projects\opencvtest_24\opencvtest\stitch6_2016.02.10.cpp(236): error C4716: 'automatic_feature_detection_set' : must return a value

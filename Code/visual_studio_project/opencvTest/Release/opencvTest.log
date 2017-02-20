@@ -1,0 +1,11 @@
+﻿Build started 3/26/2015 10:53:09 PM.
+     1>Project "c:\Users\User\documents\visual studio 2013\Projects\opencvTest\opencvTest\opencvTest.vcxproj" on node 2 (Build target(s)).
+     1>ClCompile:
+         C:\Program Files (x86)\Microsoft Visual Studio 12.0\VC\bin\CL.exe /c /I\...\...\include /Zi /nologo /W3 /WX- /sdl /O2 /Oi /Oy- /GL /D WIN32 /D NDEBUG /D _CONSOLE /D _LIB /D _UNICODE /D UNICODE /Gm- /EHsc /MD /GS /Gy /fp:precise /Zc:wchar_t /Zc:forScope /Fo"Release\\" /Fd"Release\vc120.pdb" /Gd /TP /analyze- /errorReport:prompt Source.cpp
+         Source.cpp
+     1>Source.cpp(2): fatal error C1083: Cannot open include file: 'opencv2\opencv.hpp': No such file or directory
+     1>Done Building Project "c:\Users\User\documents\visual studio 2013\Projects\opencvTest\opencvTest\opencvTest.vcxproj" (Build target(s)) -- FAILED.
+
+Build FAILED.
+
+Time Elapsed 00:00:00.24
