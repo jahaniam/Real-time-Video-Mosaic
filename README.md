@@ -11,7 +11,7 @@ This program can work with live camera/webcam or a pre-recorded video. You can r
 
 To run in your own machine:
 You need to compile CUDA for your opencv 2.411 version and then recompile the code in your machine.
-There is a manual I wrote: "how to compile CUDA for Opencv 2.411.pdf" or you can use other helpful links over the internet.
+There is a manual I wrote: "how to compile the code.pdf" or you can use other helpful links over the internet about compiling opencv for cuda.
 I used visual studio but you can use g++ to compile but you need to link the libraries.
 __________
 Demos at:
