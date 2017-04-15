@@ -1,3 +1,12 @@
+/*
+Ali Jahani Amiri
+Advanced Robotics and Intelligent Systems
+University of Tehran, Iran
+
+Demos at: https://www.youtube.com/watch?v=on_sG_X79oQ
+Link to the paper: http://ieeexplore.ieee.org/document/7886813/
+*/
+
 #include <stdio.h>
 #include <iostream>
 #include "opencv2/core/core.hpp"
