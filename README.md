@@ -1,4 +1,5 @@
-# Real-time-Video-Mosaic ( Real-time video stabilization and mosaicking for monitoring and surveillance )
+# Real-time-Video-Mosaic 
+(Real-time video stabilization and mosaicking for monitoring and surveillance )
 
 This project has been done under supervision of: Dr. Hadi Moradi
 
