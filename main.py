@@ -4,24 +4,22 @@ import numpy as np
 
 
 class VideMosaic:
-    def __init__(self, first_image, output_height_times=2, output_width_times=4, detector_type="orb"):
+    def __init__(self, first_image, output_height_times=2, output_width_times=4, detector_type="sift"):
         """This class processes every frame and generates the panorama
 
         Args:
-            first_image (image for the first frame): [description]
-            output_height_times (int, optional): [description]. Defaults to 2.
-            output_width_times (int, optional): [description]. Defaults to 4.
-            detector_type (str, optional): [description]. Defaults to "orb".
+            first_image (image for the first frame): first image to initialize the output size
+            output_height_times (int, optional): determines the output height based on input image height. Defaults to 2.
+            output_width_times (int, optional): determines the output width based on input image width. Defaults to 4.
+            detector_type (str, optional): the detector for feature detection. It can be "sift" or "orb". Defaults to "sift".
         """
         self.detector_type = detector_type
-
-        if detector_type == "orb":
-            self.detector = cv2.ORB_create(700)
-            self.bf = cv2.BFMatcher(cv2.NORM_HAMMING, crossCheck=True)
-
-        elif detector_type == "sift":
+        if detector_type == "sift":
             self.detector = cv2.SIFT_create(700)
             self.bf = cv2.BFMatcher()
+        elif detector_type == "orb":
+            self.detector = cv2.ORB_create(700)
+            self.bf = cv2.BFMatcher(cv2.NORM_HAMMING, crossCheck=True)
 
         self.visualize = True
 
@@ -42,11 +40,25 @@ class VideMosaic:
         self.H_old[1, 2] = self.w_offset
 
     def process_first_frame(self, first_image):
+        """processes the first frame for feature detection and description
+
+        Args:
+            first_image (cv2 image/np array): first image for feature detection
+        """
         self.frame_prev = first_image
         frame_gray_prev = cv2.cvtColor(first_image, cv2.COLOR_BGR2GRAY)
         self.kp_prev, self.des_prev = self.detector.detectAndCompute(frame_gray_prev, None)
 
     def match(self, des_cur, des_prev):
+        """matches the descriptors
+
+        Args:
+            des_cur (np array): current frame descriptor
+            des_prev (np arrau): previous frame descriptor
+
+        Returns:
+            array: and array of matches between descriptors
+        """
         # matching
         if self.detector_type == "sift":
             pair_matches = self.bf.knnMatch(des_cur, des_prev, k=2)
@@ -60,6 +72,8 @@ class VideMosaic:
 
         # Sort them in the order of their distance.
         matches = sorted(matches, key=lambda x: x.distance)
+
+        # get the maximum of 20  best matches
         matches = matches[:min(len(matches), 20)]
         # Draw first 10 matches.
         if self.visualize:
@@ -68,18 +82,15 @@ class VideMosaic:
             cv2.imshow('matches', match_img)
         return matches
 
-    def filter_good_matches(self):
-        pass
-
     def process_frame(self, frame_cur):
+        """gets an image and processes that image for mosaicing
+
+        Args:
+            frame_cur (np array): input of current frame for the mosaicing
+        """
         self.frame_cur = frame_cur
         frame_gray_cur = cv2.cvtColor(frame_cur, cv2.COLOR_BGR2GRAY)
         self.kp_cur, self.des_cur = self.detector.detectAndCompute(frame_gray_cur, None)
-
-        # # if first frame
-        # if self.des_prev == None:
-        #     self.kp_prev = self.kp_cur
-        #     self.des_prev = self.des_cur
 
         self.matches = self.match(self.des_cur, self.des_prev)
 
@@ -100,6 +111,16 @@ class VideMosaic:
 
     @ staticmethod
     def findHomography(image_1_kp, image_2_kp, matches):
+        """gets two matches and calculate the homography between two images
+
+        Args:
+            image_1_kp (np array): keypoints of image 1
+            image_2_kp (np_array): keypoints of image 2
+            matches (np array): matches between keypoints in image 1 and image 2
+
+        Returns:
+            np arrat of shape [3,3]: Homography matrix
+        """
         # taken from https://github.com/cmcguinness/focusstack/blob/master/FocusStack.py
 
         image_1_points = np.zeros((len(matches), 1, 2), dtype=np.float32)
@@ -114,22 +135,40 @@ class VideMosaic:
         return homography
 
     def warp(self, frame_cur, H):
+        """ warps the current frame based of calculated homography H
+
+        Args:
+            frame_cur (np array): current frame
+            H (np array of shape [3,3]): homography matrix
+
+        Returns:
+            np array: image output of mosaicing
+        """
         warped_img = cv2.warpPerspective(
             frame_cur, H, (self.output_img.shape[1], self.output_img.shape[0]), flags=cv2.INTER_LINEAR)
 
-        transformed_corners = self.get_transformed_corners(frame_cur, warped_img, H)
-        warped_img = self.draw_corners(warped_img, transformed_corners)
+        transformed_corners = self.get_transformed_corners(frame_cur, H)
+        warped_img = self.draw_border(warped_img, transformed_corners)
 
         self.output_img[warped_img > 0] = warped_img[warped_img > 0]
         output_temp = np.copy(self.output_img)
-        output_temp = self.draw_corners(output_temp, transformed_corners, color=(0, 0, 255))
+        output_temp = self.draw_border(output_temp, transformed_corners, color=(0, 0, 255))
 
         cv2.imshow('output',  output_temp/255.)
 
         return self.output_img
 
     @ staticmethod
-    def get_transformed_corners(frame_cur, output, H):
+    def get_transformed_corners(frame_cur, H):
+        """finds the corner of the current frame after warp
+
+        Args:
+            frame_cur (np array): current frame
+            H (np array of shape [3,3]): Homography matrix 
+
+        Returns:
+            [np array]: a list of 4 corner points after warping
+        """
         corner_0 = np.array([0, 0])
         corner_1 = np.array([frame_cur.shape[1], 0])
         corner_2 = np.array([frame_cur.shape[1], frame_cur.shape[0]])
@@ -145,7 +184,17 @@ class VideMosaic:
 
         return transformed_corners
 
-    def draw_corners(self, image, corners, color=(0, 0, 0)):
+    def draw_border(self, image, corners, color=(0, 0, 0)):
+        """This functions draw rectancle border
+
+        Args:
+            image ([type]): current mosaiced output
+            corners (np array): list of corner points
+            color (tuple, optional): color of the border lines. Defaults to (0, 0, 0).
+
+        Returns:
+            np array: the output image with border
+        """
         for i in range(corners.shape[1]-1, -1, -1):
             cv2.line(image, tuple(corners[0, i, :]), tuple(
                 corners[0, i-1, :]), thickness=5, color=color)
@@ -170,12 +219,14 @@ def main():
             is_first_frame = False
             continue
 
+        # process each frame
         video_mosaic.process_frame(frame_cur)
         if cv2.waitKey(1) & 0xFF == ord('q'):
             break
     cv2.waitKey(0)
     cap.release()
     cv2.destroyAllWindows()
+    cv2.imwrite('mosaic.jpg', video_mosaic.output_img)
 
 
 if __name__ == "__main__":
